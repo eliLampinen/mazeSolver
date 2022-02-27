@@ -1,2 +1,10 @@
 Results:
 
+Could not get out of maze (maze1) with 20 moves
+150 was enough moves. Exited the maze (maze1) with 121 moves
+200 was enough moves. Exited the maze (maze1) with 121 moves
+
+Could not get out of maze (maze2) with 20 moves
+Could not get out of maze (maze2) with 150 moves
+200 was enough moves. Exited the maze (maze2) with 189 moves
+
