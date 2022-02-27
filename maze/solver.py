@@ -9,7 +9,7 @@ def solve(path, maze, availableMovesLeft, timeToLive):
 
     path (tuple) :  Starting location when starting to solve the maze
     maze (list) :  2D list of the maze
-    availableMovesLeft :  How many available moves there is to solve the maze
+    availableMovesLeft :  How many available moves there is to solve the maze. This should be reduced everytime when recursively calling the function.
     timeToLive :  How many available moves there is to solve the maze
     
     """
