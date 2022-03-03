@@ -124,7 +124,13 @@ def writeToFile(results, mazeName, mazeList, fileName = "results.txt"):
 if __name__ == "__main__":
 
     moves = [20, 150, 200]
-    mazeOfChoice = str(input('Please choose one [maze1 or maze2]: '))
+    while True:
+        mazeOfChoice = str(input('Please choose one [maze1 or maze2]: '))
+        if mazeOfChoice in ["maze1", "maze2"]:
+            break
+        else:
+            print("Choose again!")
+        
     row, col, originalMazeList = getMazeList(mazeOfChoice)
 
     for i in moves:
