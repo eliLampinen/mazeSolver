@@ -14,7 +14,8 @@ def solve(path, maze, availableMovesLeft, timeToLive):
     
     """
     cur = path[-1]
-    possibles = [(cur[0], cur[1] + 1), (cur[0], cur[1] - 1), (cur[0] + 1, cur[1]), (cur[0] - 1, cur[1])] # Possible moves: Right, left, down, up
+    possibles = [(cur[0], cur[1] - 1), (cur[0] - 1, cur[1]), (cur[0], cur[1] + 1), (cur[0] + 1, cur[1])] # Possible moves at 2D list
+
     if availableMovesLeft == 0:
         return
 
@@ -29,17 +30,17 @@ def solve(path, maze, availableMovesLeft, timeToLive):
             path = path + (i,)
 
             if timeToLive not in resultDict:
-                resultDict[timeToLive] = len(path)-1
+                resultDict[timeToLive] = (len(path)-1, path)
             else:
                 currentBest = resultDict[timeToLive]
-                if currentBest > len(path)-1: # Replace current lowest path
-                    resultDict[timeToLive] = len(path)-1
-            
+                if currentBest > (len(path)-1, path): # Replace current lowest path
+                    resultDict[timeToLive] = (len(path)-1, path)
+
         else: # If got thorugh all of above check, it is possible continue solving
             newPath = path + (i,)
             solve(newPath, maze, availableMovesLeft - 1, timeToLive) # Recursive call with current location added to the path and one move taken away
             maze[i[0]][i[1]] = "#"
-
+        
 
 def getMazeList(chosenMaze):
     """ Get 2D list from txt file maze
@@ -80,13 +81,14 @@ def getMazeList(chosenMaze):
     return row, col, mazeList
 
 
-def writeToFile(results, mazeName, fileName = "results.txt"):
+def writeToFile(results, mazeName, mazeList, fileName = "results.txt"):
     """ Write results to txt file
 
     Parameters
 
     results (dict) :  Dictionary of results you want append to file
     mazeName (str) :  Name of the maze that went through the algorithm
+    mazeList (list) :  2D list of the maze
     fileName (str) :  Name of the file you want results to be written in
     
     """
@@ -97,19 +99,35 @@ def writeToFile(results, mazeName, fileName = "results.txt"):
                 f.write(f'Could not get out of maze ({mazeName}) with {i} moves\n')
          
         for k,v in results.items():
-            sentance = f'{k} was enough moves. Exited the maze ({mazeName}) with {v} moves\n'
+            sentance = f'{k} was enough moves. Exited the maze ({mazeName}) with {v[0]} moves\n'
             f.write(sentance)
+            print(f"Got out of the maze with {k} moves. Heres the path: \n")
+
+            for i in v[1]: # Replace path with "X"
+                mazeList[i[0]][i[1]] = "X"
+
+            for i in mazeList:
+                for j in i:
+                    if j == "X": # Print colored text for the path
+                        print(f'\x1b[6;30;42m' + j + '\x1b[0m', end="") # Not 100% sure does this does this work everywhere. Please use the commented line below if not working.
+                        #print(j, end="")
+                    else:
+                        print(j, end="")
+                else:
+                    print("\r")
+            print("\n")
+
         f.write("\n")
+        print(f"Results also stored to '{fileName}' file.")
 
 
 if __name__ == "__main__":
 
     moves = [20, 150, 200]
-    mazeOfChoice = "maze2" # Choose maze1 or maze2
+    mazeOfChoice = str(input('Please choose one [maze1 or maze2]: '))
     row, col, originalMazeList = getMazeList(mazeOfChoice)
 
     for i in moves:
         mazeList = copy.deepcopy(originalMazeList) # Create a deepcopy of the original maze list so we can modify the list when solving it
         solve(path = ((row,col), ), maze = mazeList, availableMovesLeft = i, timeToLive = i)
-
-    writeToFile(resultDict, mazeOfChoice)
+    writeToFile(resultDict, mazeOfChoice, originalMazeList)
